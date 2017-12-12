@@ -8,7 +8,6 @@
 define(["exports", "./parser", "./query", "./util/each", "./util/contains"], function(exports, parser, QUERY, each, contains){
 //({define:typeof define!="undefined"?define:function(deps, factory){module.exports = factory(exports, require("./parser"));}}).
 //define(["exports", "./parser"], function(exports, parser){
-
 var parseQuery = parser.parseQuery;
 var stringify = typeof JSON !== "undefined" && JSON.stringify || function(str){
 	return '"' + str.replace(/"/g, "\\\"") + '"';
@@ -22,7 +21,20 @@ exports.jsOperatorMap = {
 	"lt" : "<",
 	"gt" : ">"
 };
+
 exports.operators = {
+	like: filter(function(value, pattern) {
+		return like(pattern, value, false, false);
+	}),
+	ilike: filter(function(value, pattern) {
+		return like(pattern, value, false, true);
+	}),
+	notlike: filter(function(value, pattern) {
+		return like(pattern, value, true, false);
+	}),
+	notilike: filter(function(value, pattern) {
+		return like(pattern, value, true, true);
+	}),
 	sort: function(){
 		var terms = [];
 		for(var i = 0; i < arguments.length; i++){
@@ -286,6 +298,22 @@ exports.operators = {
 		return this[0];
 	}
 };
+
+function convertLikePatternToRegex(pattern, flags) {
+	var escapeStringRegexp = require('escape-string-regexp');
+	var regexPattern = '^' + escapeStringRegexp(pattern).replace(/_/g, '.').replace(/%/g, '.*') + '$';
+
+	return new RegExp(regexPattern, flags);
+};
+
+function like(pattern, value, not, caseInsensitive) {
+	var flags = caseInsensitive ? 'i' : '';
+	var regex = convertLikePatternToRegex(pattern, flags);
+	var match = regex.test(value);
+
+	return (not && !match) || (!not && match);
+};
+
 exports.filter = filter;
 function filter(condition, not){
 	// convert to boolean right now

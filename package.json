@@ -1,5 +1,5 @@
 {
-  "name": "rql",
+  "name": "@powell0/rql",
   "version": "0.3.3",
   "author": "Kris Zyp",
   "contributors": [
@@ -26,12 +26,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/kriszyp/rql"
+    "url": "http://github.com/powell0/rql"
   },
   "maintainers": [
     {
-      "name": "Kris Zyp",
-      "email": "kriszyp@gmail.com"
+      "name": "Ian Ferguson",
+      "email": "iferguson@ddswireless.com"
     }
   ],
   "mappings": {
@@ -39,6 +39,7 @@
     "promised-io": "http://github.com/kriszyp/promised-io/zipball/v0.2.1"
   },
   "dependencies": {
+    "escape-string-regexp": "^1.0.5",
     "promised-io": ">=0.3.0"
   },
   "devDependencies": {
